@@ -17,7 +17,7 @@ def create_table():
 create_table()
 
 ventana=tk.Tk()
-ventana.title("_Mi primer Login_")	#Titulo de la ventana principal
+ventana.title("_LOGIN FARMACIA_")	#Titulo de la ventana principal
 ventana.geometry("280x450+300+250")	#Tamaño de nuestra ventana Principal
 	
 color='#c5e2f6'			#Codigo HEX del color de fondo usado
@@ -25,15 +25,7 @@ ventana['bg']=color		#Definimos nuestra ventana 'bg' con el valor 'color'
 
 Label(ventana,bg=color,text="Login",font=("Arial Black",16)).pack()	#Mostramos texto 'Login'
 
-#Abrir imagen para ventana principal
-					#Abrimos la imagen 'logo.png'
-	#Redimensionamos la imagen a 180x180
-				#Le damos nombre a nuestra imagen redimensionada (photoImg)
-		#Mostramos la imagen en nuestra ventana
-#Abrir imagen para ventana de registro
-				#Abrimos la imagen 'rak.jpg'
-	#Redimensionamos la imagen
-				#Le damos nombre a nuestra imagen redimensionada (photo_reg)
+
 #Cajas de nuestra ventana Principal
 Label(ventana,text="Usuario : ",bg=color,font=("Arial Black",10)).pack()	#Texto 'Usuario:'
 caja1=Entry(ventana,font=("Arial",10))										#Creamos una caja de texto 'caja1'
@@ -102,16 +94,15 @@ Label(ventana,text=" ",bg=color,font=("Arial",10)).pack()		#Solo es una linea va
 Button(text=" ENTRAR ",command=login,bg='#a6d4f2',font=("Arial Rounded MT Bold",10)).pack()		#Boton ==> funcion 'login'
 Label(ventana,text=" ",bg=color,font=("Arial Black",10)).pack()
 Label(ventana,text="No tienes una cuenta ? : ",bg=color,font=("Arial Black",10)).pack()		#Simple texto
-#La siguiente linea (boton) nos llama ala funcion 'nuevaVentana' ==> ( ventana de registro)
+#La siguiente linea (boton) nos llama a la funcion 'nuevaVentana' ==> ( ventana de registro)
 boton1=Button(ventana,text="REGISTRO",bg='#a6d4f2',command=nuevaVentana,font=("Arial Rounded MT Bold",10)).pack()
 
 ventana.mainloop()
 # Desarrollo de la Interfaz grafica
 
-
 root=Tk()
 root.title("Farmacia")
-root.geometry("850x400")
+root.geometry("820x400")
 
 idProducto=StringVar()
 nombre=StringVar()
@@ -129,34 +120,21 @@ def crearBD():
 						idProducto INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 
 						nombre VARCHAR(50) NOT NULL, 
 						laboratorio VARCHAR(50) NOT NULL, 
-						precio INT NOT NULL,
 						idCategoria INTEGER,
-						FOREIGN KEY (idCategoria) REFERENCES categorias (id))""")
-
+						FOREIGN KEY (idCategoria) REFERENCES categorias (id)
+						precio INT NOT NULL""")
+						
 
 		mb.showinfo("CONEXION","Base de Datos Creada exitosamente")
 	except:
 		mb.showinfo("CONEXION", "Conexión exitosa con la base de datos")
 
-# conexion = sqlite3.connect("inventario_farmacia.db")
-# cursor = conexion.cursor()
 	try:
 		cursor.execute("""CREATE TABLE IF NOT EXISTS categorias(
-			id INTEGER PRIMARY KEY AUTOINCREMENT,
-			categoria VARCHAR(100) NOT NULL)""")
+						id INTEGER PRIMARY KEY AUTOINCREMENT,
+						categoria VARCHAR(100) NOT NULL)""")
 	except:
 		mb.showinfo("CONEXION", "Conexión exitosa con la base de datos")
-
-
-# conexion = sqlite3.connect("inventario_farmacia.db")
-# cursor = conexion.cursor()
-# cursor.execute("INSERT INTO categorias VALUES(?, ?)",("2" ,"Analgésicos"))
-# conexion.commit()
-
-# def consulta():
-#     cursor.execute("SELECT nombre_categoria FROM categorias")
-#     combo["values"] = [i for (i, *_) in cursor]
-
 
 
 def eliminarBD():
@@ -265,8 +243,8 @@ def borrar():
 	mostrar()
 
 
-###################### Colocar widgets en la VISTA ######################
-########## Creando Los menus ###############
+###################### Widgets ######################
+########## Menú ###############
 menubar=Menu(root)
 menubasedat=Menu(menubar,tearoff=0)
 menubasedat.add_command(label="Crear/Conectar Base de Datos", command=crearBD)
@@ -279,7 +257,7 @@ ayudamenu.add_command(label="Resetear Campos", command=limpiarCampos)
 ayudamenu.add_command(label="Acerca", command=mensaje)
 menubar.add_cascade(label="Ayuda",menu=ayudamenu)
 
-############## Creando etiquetas y cajas de texto ###########################
+############## Etiquetas y cajas de texto ###########################
 e1=Entry(root, textvariable=idProducto)
 
 l2=Label(root, text="Nombre")
@@ -302,12 +280,12 @@ l5.place(x=380,y=40)
 
 l6=Label(root, text="Categoría")
 l6.place(x=430, y=40)
-l6=Entry(root, textvariable=categoria, width=10)
+l6=Entry(root, textvariable=categoria, width=30)
 l6.place(x=490, y=40)
 	
 
 
-################# Creando botones ###########################
+################# Botones ###########################
 
 b1=Button(root, text="Crear Registro", command=crear)
 b1.place(x=50, y=90)
