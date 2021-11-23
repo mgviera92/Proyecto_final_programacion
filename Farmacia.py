@@ -111,12 +111,14 @@ ventana.mainloop()
 
 root=Tk()
 root.title("Farmacia")
-root.geometry("600x400")
+root.geometry("850x400")
 
 idProducto=StringVar()
 nombre=StringVar()
 laboratorio=StringVar()
 precio=StringVar()
+idCategoria=StringVar()
+categoria=StringVar()
 
 def crearBD():
 	conexion=sqlite3.connect("inventario_farmacia.db")
@@ -127,13 +129,35 @@ def crearBD():
 						idProducto INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 
 						nombre VARCHAR(50) NOT NULL, 
 						laboratorio VARCHAR(50) NOT NULL, 
-						precio INT NOT NULL)""")
-						
+						precio INT NOT NULL,
+						idCategoria INTEGER,
+						FOREIGN KEY (idCategoria) REFERENCES categorias (id))""")
+
 
 		mb.showinfo("CONEXION","Base de Datos Creada exitosamente")
 	except:
 		mb.showinfo("CONEXION", "Conexión exitosa con la base de datos")
-	
+
+# conexion = sqlite3.connect("inventario_farmacia.db")
+# cursor = conexion.cursor()
+	try:
+		cursor.execute("""CREATE TABLE IF NOT EXISTS categorias(
+			id INTEGER PRIMARY KEY AUTOINCREMENT,
+			categoria VARCHAR(100) NOT NULL)""")
+	except:
+		mb.showinfo("CONEXION", "Conexión exitosa con la base de datos")
+
+
+# conexion = sqlite3.connect("inventario_farmacia.db")
+# cursor = conexion.cursor()
+# cursor.execute("INSERT INTO categorias VALUES(?, ?)",("2" ,"Analgésicos"))
+# conexion.commit()
+
+# def consulta():
+#     cursor.execute("SELECT nombre_categoria FROM categorias")
+#     combo["values"] = [i for (i, *_) in cursor]
+
+
 
 def eliminarBD():
 	conexion=sqlite3.connect("inventario_farmacia.db")
@@ -170,8 +194,8 @@ def crear():
 	conexion=sqlite3.connect("inventario_farmacia.db")
 	cursor=conexion.cursor()
 	try:
-		datos=nombre.get(),laboratorio.get(),precio.get()
-		cursor.execute("INSERT INTO productos VALUES(NULL,?,?,?)", (datos))
+		datos=nombre.get(),laboratorio.get(),precio.get(),categoria.get()
+		cursor.execute("INSERT INTO productos VALUES(NULL,?,?,?,?)", (datos))
 		conexion.commit()
 	except:
 		mb.showwarning("ADVERTENCIA","Ocurrió un error al crear el registro, verifique conexión con BD")
@@ -189,19 +213,21 @@ def mostrar():
 	try:
 		cursor.execute("SELECT * FROM productos")
 		for row in cursor:
-			tree.insert("",0,text=row[0], values=(row[1],row[2],row[3]))
+			tree.insert("",0,text=row[0], values=(row[1],row[2],row[3],row[4]))
 	except:
 		pass
 
                 ################################## Tabla ################################
-tree=ttk.Treeview(height=10, columns=('#0','#1','#2'))
+tree=ttk.Treeview(height=10, columns=('#0','#1','#2','#3'))
 tree.place(x=0, y=130)
 tree.column('#0',width=100)
 tree.heading('#0', text="ID", anchor=CENTER)
 tree.heading('#1', text="Nombre del Producto", anchor=CENTER)
 tree.heading('#2', text="Laboratorio", anchor=CENTER)
-tree.column('#3', width=100)
+# tree.column('#3', width=100)
 tree.heading('#3', text="Precio", anchor=CENTER)
+tree.heading('#4', text="Categoría", anchor=CENTER)
+tree.column('#4', width=100)
 
 def seleccionarUsandoClick(event):
 	item=tree.identify('item',event.x,event.y)
@@ -216,8 +242,8 @@ def actualizar():
 	conexion=sqlite3.connect("inventario_farmacia.db")
 	cursor=conexion.cursor()
 	try:
-		datos=nombre.get(),laboratorio.get(),precio.get()
-		cursor.execute("UPDATE productos SET nombre=?, laboratorio=?, precio=?, WHERE idProducto="+idProducto.get(), (datos))
+		datos=nombre.get(),laboratorio.get(),precio.get(),categoria.get()
+		cursor.execute("UPDATE productos SET nombre=?, laboratorio=?, precio=?, categoria=?, WHERE idProducto="+idProducto.get(), (datos))
 		conexion.commit()
 	except:
 		mb.showwarning("ADVERTENCIA","Ocurrió un error al actualizar el registro")
@@ -274,6 +300,13 @@ e4.place(x=320, y=40)
 l5=Label(root, text="$")
 l5.place(x=380,y=40)
 
+l6=Label(root, text="Categoría")
+l6.place(x=430, y=40)
+l6=Entry(root, textvariable=categoria, width=10)
+l6.place(x=490, y=40)
+	
+
+
 ################# Creando botones ###########################
 
 b1=Button(root, text="Crear Registro", command=crear)
@@ -285,6 +318,7 @@ b3.place(x=320, y=90)
 b4=Button(root, text="Eliminar Registro",bg="red", command=borrar)
 b4.place(x=450, y=90)
 
-root.config(menu=menubar)
 
+root.config(menu=menubar)
+ 
 root.mainloop()
